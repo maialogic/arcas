@@ -9,15 +9,15 @@ jobs:
   test:
     docker:
       - image: circleci/python:3.8.1
-          environment:
-            DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/arcas-ci
+        environment:
+          DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/arcas-ci
 
       # CircleCI PostgreSQL image
       - image: circleci/postgres:latest
-          environment:
-            POSTGRES_DB: arcas-ci
-            POSTGRES_PASSWORD: postgres
-            POSTGRES_USER: postgres
+        environment:
+          POSTGRES_DB: arcas-ci
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
     steps:
       - checkout
       # Download and cache dependencies
