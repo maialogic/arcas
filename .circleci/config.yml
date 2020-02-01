@@ -7,14 +7,25 @@ orbs:
   cloudrun: circleci/gcp-cloud-run@1.0.2
 jobs:
   test:
+    docker:
+      - image: circleci/python:3.8.1
+          environment:
+            DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/arcas-ci
+
+      # CircleCI PostgreSQL image
+      - image: circleci/postgres:latest
+          environment:
+            POSTGRES_DB: arcas-ci
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_USER: postgres
     steps:
       - checkout
       # Download and cache dependencies
       - restore_cache:
-        keys:
-          - v1-dependencies-{{ checksum "requirements.txt" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+          keys:
+            - v1-dependencies-{{ checksum "requirements.txt" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
       - run:
           name: install dependencies
           command: |
