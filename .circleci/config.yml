@@ -6,6 +6,31 @@ version: 2.1
 orbs:
   cloudrun: circleci/gcp-cloud-run@1.0.2
 jobs:
+  test:
+    steps:
+      - checkout
+      # Download and cache dependencies
+      - restore_cache:
+        keys:
+          - v1-dependencies-{{ checksum "requirements.txt" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+      - save_cache:
+          paths:
+            - ./venv
+          key: v1-dependencies-{{ checksum "requirements.txt" }}
+      - run:
+          name: run tests
+          command: |
+            . venv/bin/activate
+            pytest --cov=app --snapshot-update -p no:warnings
+            codecov
   build_and_deploy:
     docker:
       - image: "cimg/base:stable"
@@ -23,4 +48,5 @@ jobs:
 workflows:
   build_and_deploy_to_managed_workflow:
     jobs:
+      - test
       - build_and_deploy
