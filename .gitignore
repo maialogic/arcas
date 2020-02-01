@@ -3,3 +3,6 @@ env
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
+
+# Auth
+gcp_project_auth.*

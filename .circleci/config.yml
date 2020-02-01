@@ -20,17 +20,6 @@ jobs:
           region: ${REGION}
           service-name: ${SERVICE_NAME}
           unauthenticated: true
-      - run:
-          command: >
-            GCP_API_RESULTS=$(curl -s "$GCP_DEPLOY_ENDPOINT")
-
-            if [ "$GCP_API_RESULTS" != "Hello World!" ]; then
-              echo "Result is unexpected"
-              echo 'Result: '
-              curl -s "$GCP_DEPLOY_ENDPOINT"
-              exit 1;
-            fi
-          name: Gcloud Run deployed service.
 workflows:
   build_and_deploy_to_managed_workflow:
     jobs:
