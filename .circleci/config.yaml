@@ -1,0 +1,37 @@
+# Build and deploy stateless images to Google Cloud Run as serverless applications.
+# Repo: https://github.com/CircleCI-Public/gcp-cloud-run-orb
+# Home: https://cloud.google.com/run/
+
+version: 2.1
+orbs:
+  gcp-cloud-run: circleci/gcp-cloud-run@1.0.2
+jobs:
+  build_and_deploy:
+    docker:
+      - image: "cimg/base:stable"
+    steps:
+      - checkout
+      - cloudrun/init
+      - cloudrun/build:
+          tag: "gcr.io/${GOOGLE_PROJECT_ID}/${IMAGE_NAME}"
+      - cloudrun/deploy:
+          image: "gcr.io/${GOOGLE_PROJECT_ID}/${IMAGE_NAME}"
+          platform: managed
+          region: ${REGION}
+          service-name: ${SERVICE_NAME}
+          unauthenticated: true
+      - run:
+          command: >
+            GCP_API_RESULTS=$(curl -s "$GCP_DEPLOY_ENDPOINT")
+
+            if [ "$GCP_API_RESULTS" != "Hello World!" ]; then
+              echo "Result is unexpected"
+              echo 'Result: '
+              curl -s "$GCP_DEPLOY_ENDPOINT"
+              exit 1;
+            fi
+          name: Gcloud Run deployed service.
+workflows:
+  build_and_deploy_to_managed_workflow:
+    jobs:
+      - build_and_deploy
