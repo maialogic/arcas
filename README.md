@@ -13,12 +13,12 @@ source env/bin/activate
 
 ### 📦 Install dependencies
 
-```python
+```bash
 pip install -r requirements.txt
 ```
 
 ## 🏃 Run
 
-```python
+```bash
 uvicorn main:app --reload
 ```
